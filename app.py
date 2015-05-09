@@ -34,6 +34,15 @@ class Book(db.Model):
   def asdict(self):
     return self.__dict__
 
+def getBooks():
+  books = Book.query.all()
+  realbooks = []
+  for book in books:
+    book = book.asdict()
+    book.pop('_sa_instance_state', None)
+    realbooks.append(book)
+  return realbooks
+
 @app.route('/')
 def hello():
   return "The API is at <a href='/books'>/books</a>"
@@ -45,13 +54,17 @@ def books():
     newBook = Book(bookJson['title'], bookJson['author'], bookJson['isbn'], bookJson['price'], bookJson['seller_name'], bookJson['seller_phone'], bookJson['seller_email'], bookJson['other_information'])
     db.session.add(newBook)
     db.session.commit()
-  books = Book.query.all()
-  realbooks = []
-  for book in books:
-    book = book.asdict()
-    book.pop('_sa_instance_state', None)
-    realbooks.append(book)
-  return jsonify({"books": realbooks})
+  books = getBooks()
+  return jsonify({"books": books})
+
+@app.route('/books/<book_id>', methods=['DELETE'])
+def abook(book_id):
+  book = Book.query.get(book_id)
+  if book:
+    db.session.delete(book)
+    db.session.commit()
+  books = getBooks()
+  return jsonify({"books": books})
 
 
 if __name__ == '__main__':

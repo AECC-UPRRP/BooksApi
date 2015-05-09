@@ -53,7 +53,7 @@ def hello():
 def books():
   if request.method == 'POST':
     bookJson = request.get_json(force=True)
-    newBook = Book(bookJson['title'], bookJson['author'], bookJson['isbn'], bookJson['price'], bookJson['seller_name'], bookJson['seller_phone'], bookJson['seller_email'], bookJson['other_information'])
+    newBook = Book(bookJson.get('title', ""), bookJson.get('author', ""), bookJson.get('isbn', ""), bookJson.get('price', ""), bookJson.get('seller_name', ""), bookJson.get('seller_phone', ""), bookJson.get('seller_email', ""), bookJson.get('other_information', ""))
     db.session.add(newBook)
     db.session.commit()
   books = getBooks()

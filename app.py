@@ -2,10 +2,12 @@ import os
 
 from flask import Flask, jsonify, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:////tmp/test.db")
 db = SQLAlchemy(app)
+cors = CORS(app)
 
 class Book(db.Model):
   id = db.Column(db.Integer, primary_key=True)
